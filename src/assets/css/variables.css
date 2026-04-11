@@ -1,0 +1,43 @@
+:root {
+    /* Color Palette */
+    --color-bg: #1F1F24;
+    --color-bg-secondary: #151C29;
+    --color-text: #E8ECF6;
+    --color-primary: #1E293B;
+    --color-accent: #3B82F6;
+
+    /* Status colors */
+    --color-to-do: #FF3B3B;
+    --color-in-progress: #FF8C00;
+    --color-completed: #0CB35A;
+
+    /* Card colors*/
+    --color-card-light: rgba(255, 255, 255, .10);
+    --color-card-dark: rgba(255, 255, 255, .05);
+
+
+    /* Typography */
+    --font-family: 'Inter', sans-serif;
+
+    --font-size-h1: 1.5rem;
+
+    --font-size-p-l: 1.25rem;
+    --font-size-p-m: 1.1rem;
+    --font-size-p-s: .95rem;
+
+    /* Spacing */
+    --icon-size-l: 30px;
+    --icon-size-m: 25px;
+
+    --space-1: .75rem;
+    --space-1e: 1rem;
+    --space-2: 1.5rem;
+    --space-3: 2.5rem;
+    --space-4: 3.5rem;
+    --space-5: 6rem;
+
+    --radius-section: 25px;
+
+    /* Effects */
+    --box-shadow-base: 2px 2px 6px rgba(0, 0, 0, .25);
+}
