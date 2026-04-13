@@ -35,20 +35,23 @@ const Dashboard = () => {
 
     return (
         <section className="dashboard">
-            <Header title="All tasks" userName="El Pridro" />
 
             <Sidebar subjects={subjects} statuses={statuses} />
 
-            <Panel>
-                {/* Due soon section */}
-                <Section type="featured" title="Due soon" tasks={dueSoonTasks} />
+            <div className="main-content">
+                <Header title="All tasks" userName="El Pridro" />
 
-                {/* In progress section */}
-                <Section type="compact" title="In Progress" tasks={inProgressTasks} />
+                <Panel>
+                    {/* Due soon section */}
+                    <Section type="featured" title="Due soon" tasks={dueSoonTasks} />
 
-                {/* Completed section */}
-                <Section type="compact" title="Completed" tasks={completedTasks} />
-            </Panel>
+                    {/* In progress section */}
+                    <Section type="compact" title="In Progress" tasks={inProgressTasks} />
+
+                    {/* Completed section */}
+                    <Section type="compact" title="Completed" tasks={completedTasks} />
+                </Panel>
+            </div>
         </section>
     )
 }

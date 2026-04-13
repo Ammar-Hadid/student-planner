@@ -12,7 +12,7 @@ export const subjects = [
     { id: SUBJECT_IDS.IT_SKILLS, label: 'IT skills', color: '#34D399' },
     { id: SUBJECT_IDS.ONTWERPEN, label: 'Ontwerpen', color: '#F472B6' },
     { id: SUBJECT_IDS.PROJECT, label: 'Project', color: '#FBBF24' },
-    { id: SUBJECT_IDS.FRONTEND_DEVELOPMENT, label: 'Frontend development', color: '#A78BFA' },
+    { id: SUBJECT_IDS.FRONTEND_DEVELOPMENT, label: 'Frontend', color: '#A78BFA' },
     { id: SUBJECT_IDS.BPV, label: 'BPV', color: '#22D3EE' }
 ];
 
