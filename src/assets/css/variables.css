@@ -3,7 +3,10 @@
     --color-bg: #1F1F24;
     --color-bg-secondary: #151C29;
     --color-text: #E8ECF6;
+
     --color-primary: #1E293B;
+    --color-primary-800: #222F44;
+
     --color-accent: #3B82F6;
 
     /* Status colors */
@@ -20,10 +23,13 @@
     --font-family: 'Inter', sans-serif;
 
     --font-size-h1: 1.5rem;
+    --font-size-h2: 1.35rem;
 
     --font-size-p-l: 1.25rem;
     --font-size-p-m: 1.1rem;
     --font-size-p-s: .95rem;
+
+    --line-height-base: 1.6;
 
     /* Spacing */
     --icon-size-l: 30px;

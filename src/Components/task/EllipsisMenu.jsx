@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react"
+import { createPortal } from "react-dom";
+import { useFloating, flip, offset, shift, autoUpdate, useClick, useDismiss, useInteractions } from "@floating-ui/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -10,85 +12,81 @@ import {
 import { statuses } from "../../data/statuses"
 
 
-const EllipsisMenu = ({ activeStatusId }) => {
+const EllipsisMenu = ({ task, changeTaskStatus }) => {
     const [menuState, setMenuState] = useState(false);
     const [subMenu, setSubmenu] = useState(null);
 
-    const [mainFilpped, setMainFlipped] = useState(false);
-    const [subFlipped, setSubFlipped] = useState(false);
+    // #region Main menu floating UI
+    const { refs: mainRefs, floatingStyles: mainFloatingStyles, context: mainContext } = useFloating({
+        open: menuState,
+        onOpenChange: (open) => {
+            setMenuState(open);
 
-
-    // Flip menus when not enough space
-    const mainUlRef = useRef(null);
-    const subUlRef = useRef(null);
-    useEffect(() => {
-        const screenWidth = window.innerWidth;
-
-        if (menuState && mainUlRef.current) {
-            const rec = mainUlRef.current.getBoundingClientRect();
-            setMainFlipped(rec.right > screenWidth)
-        }
-
-        if (subMenu && subUlRef.current) {
-            const rec = subUlRef.current.getBoundingClientRect();
-            setSubFlipped(rec.right > screenWidth)
-        }
-    }, [menuState, subMenu])
-
-    // Close on outside click event listener
-    const menuRef = useRef(null);
-    useEffect(() => {
-
-        const onOutsideClick = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target)) {
-                setMenuState(false);
+            if (!open) {
                 setSubmenu(null);
             }
-        }
-        document.addEventListener('mousedown', onOutsideClick)
+        },
+        placement: "bottom-end",
+        strategy: "fixed",
+        middleware: [
+            offset(10),
+            flip(),
+            shift()
+        ],
+    });
 
-        return () => { document.removeEventListener('mousedown', onOutsideClick) }
-    }, [])
+    const click = useClick(mainContext);
+    const dismiss = useDismiss(mainContext);
 
+    const { getReferenceProps, getFloatingProps } = useInteractions([
+        click,
+        dismiss
+    ])
+    // #endregion
 
-    const toggleMenu = () => {
-        setMenuState(prev => {
-            const next = !prev;
-
-            if (!next) {
-                setSubmenu(null);
-                setMainFlipped(false);
-                setSubFlipped(false);
-            }
-
-            return next
-        })
-    }
-
+    const isSubMenuOpen = subMenu === 'status';
+    const { refs: subRefs, floatingStyles: subFloatingStyles } = useFloating({
+        open: isSubMenuOpen,
+        onOpenChange: (open) => {
+            setSubmenu(open ? 'status' : null)
+        },
+        placement: "right-start",
+        strategy: "fixed",
+        middleware: [
+            offset(-5),
+            flip(),
+            shift()
+        ]
+    });
 
     return (
-        <div className="ellipsis-menu" ref={menuRef}>
-            <button className="trigger" onClick={() => toggleMenu()}>
+        <div className="ellipsis-menu">
+            <button
+                ref={mainRefs.setReference}
+                className="trigger"
+                {...getReferenceProps({
+                    onClick: e => e.stopPropagation()
+                })}
+            >
                 <FontAwesomeIcon icon={faEllipsisVertical} />
             </button>
 
-
-            {menuState && <ul ref={mainUlRef} className={`menu ${mainFilpped ? 'is-flipped' : ''}`}>
+            {menuState && createPortal(<ul ref={mainRefs.setFloating} style={mainFloatingStyles} {...getFloatingProps()} className="dropdown-menu">
                 <li className="has-submenu">
-                    <button onClick={() => setSubmenu('status')}>
+                    <button ref={subRefs.setReference} onClick={e => { e.stopPropagation(); setSubmenu('status') }}>
                         <FontAwesomeIcon icon={faCircle} />
                         Status
                         <FontAwesomeIcon icon={faChevronRight} />
                     </button>
 
 
-                    {subMenu === 'status' && <ul ref={subUlRef} className={`submenu ${subFlipped ? 'is-flipped' : ''}`}>
+                    {subMenu === 'status' && <ul ref={subRefs.setFloating} style={subFloatingStyles} className="dropdown-submenu">
                         {statuses
-                            .filter(status => status.id !== activeStatusId)
+                            .filter(status => status.id !== task.status)
                             .map(status => {
                                 return (
                                     < li key={status.id}>
-                                        <button style={{ '--li-status-color': status.color }}>
+                                        <button onClick={(e) => { e.stopPropagation(); changeTaskStatus?.({ taskId: task.id, newStatusId: status.id }); }} style={{ '--li-status-color': status.color }}>
                                             <FontAwesomeIcon icon={status.icon} />
                                             {status.label}
                                         </button>
@@ -99,9 +97,14 @@ const EllipsisMenu = ({ activeStatusId }) => {
                     }
                 </li>
             </ul >
+                , document.body)
             }
         </div >
     )
 }
 
 export default EllipsisMenu
+
+
+
+

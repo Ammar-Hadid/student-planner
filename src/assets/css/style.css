@@ -44,6 +44,13 @@ a {
     background: var(--color-primary);
     padding: var(--space-3) 0 var(--space-3) var(--space-3);
     height: 100dvh;
+    width: clamp(250px, 25dvw, 320px);
+    transition: width .05s ease-in-out;
+}
+
+.sidebar.closed {
+    width: 88px;
+    align-items: center;
 }
 
 .sidebar button {
@@ -102,6 +109,10 @@ a {
     flex-direction: column;
 }
 
+.sidebar.closed .filters .filters-wrapper {
+    align-items: center;
+}
+
 /* Sidebar heading */
 .sidebar .heading {
     display: flex;
@@ -129,6 +140,10 @@ a {
     gap: var(--space-3);
 }
 
+.sidebar.closed .filters {
+    align-items: center;
+}
+
 /* Search bar */
 .sidebar .filters .search-bar {
     display: flex;
@@ -139,6 +154,7 @@ a {
     gap: var(--space-2);
     background: var(--color-card-dark);
     font-size: var(--font-size-p-m);
+    white-space: nowrap;
 }
 
 .sidebar .filters .search-bar svg {
@@ -165,6 +181,8 @@ a {
 
 .sidebar .filters .subject-button-color {
     width: var(--icon-size-m);
+    height: var(--icon-size-m);
+    flex-shrink: 0;
     aspect-ratio: 1 / 1;
     border-radius: 5px;
 }
@@ -280,7 +298,8 @@ header .user {
 
 }
 
-.panel .child-section .title {
+.panel .child-section .title,
+.add-task-modal .wrapper .title {
     font-size: var(--font-size-h1);
     font-weight: 700;
     display: flex;
@@ -288,13 +307,13 @@ header .user {
     align-self: flex-start;
 }
 
-.panel .child-section .title::after {
+.panel .child-section .title::after,
+.add-task-modal .wrapper .title::after {
     content: '';
     height: 6px;
     width: 50%;
     margin-top: var(--space-1);
     background-color: var(--color-accent);
-
 }
 
 .panel .featured {
@@ -333,7 +352,8 @@ header .user {
     margin-top: var(--space-1);
 }
 
-.panel .task-card {
+.panel .task-card,
+.add-task-modal .wrapper .task-card {
     background-color: var(--color-card-light);
     white-space: nowrap;
     display: flex;
@@ -343,11 +363,13 @@ header .user {
     position: relative;
 }
 
-.panel .task-card p {
+.panel .task-card p,
+.add-task-modal .wrapper .task-card p {
     font-size: var(--font-size-p-l);
 }
 
-.panel .task-card>ul {
+.panel .task-card>ul,
+.add-task-modal .wrapper .task-card>ul {
     list-style: none;
     color: var(--color-text);
     display: flex;
@@ -356,14 +378,16 @@ header .user {
     padding-left: var(--space-1e);
 }
 
-.panel .task-card ul li {
+.panel .task-card ul li,
+.add-task-modal .wrapper .task-card ul li {
     font-size: var(--font-size-p-s);
     display: flex;
     gap: var(--space-1);
     align-items: center;
 }
 
-.panel .task-card>ul li::before {
+.panel .task-card>ul li::before,
+.add-task-modal .wrapper .task-card>ul li::before {
     content: '';
     width: 10px;
     height: 10px;
@@ -380,7 +404,8 @@ header .user {
     padding: var(--space-2);
 }
 
-.panel .task-card.card-featured .badge {
+.panel .task-card.card-featured .badge,
+.add-task-modal .wrapper .task-card .badge {
     position: absolute;
     top: -25px;
     left: -25px;
@@ -397,45 +422,20 @@ header .user {
     right: 2%;
 }
 
-.ellipsis-menu ul {
+.dropdown-menu,
+.dropdown-submenu {
     background-color: var(--color-bg);
-    position: relative;
-    z-index: 2;
     display: flex;
     flex-direction: column;
     border: 1px solid var(--color-accent);
     border-radius: 10px;
     box-shadow: var(--box-shadow-base);
-    min-width: 140px
+    min-width: 140px;
+    list-style: none;
+    z-index: 1000;
 }
 
-.ellipsis-menu .menu {
-    position: absolute;
-    top: calc(100% + var(--space-1));
-    left: 50%;
-}
-
-.ellipsis-menu .menu.is-flipped {
-    left: auto;
-    right: 0;
-}
-
-.ellipsis-menu .menu .has-submenu {
-    position: relative;
-}
-
-.ellipsis-menu .menu .submenu {
-    position: absolute;
-    left: 95%;
-    top: 0;
-}
-
-.ellipsis-menu .menu .submenu.is-flipped {
-    left: auto;
-    right: 95%;
-}
-
-.ellipsis-menu .menu .submenu svg {
+.dropdown-menu .dropdown-submenu svg {
     color: var(--li-status-color);
 }
 
@@ -450,7 +450,7 @@ header .user {
     font-weight: 700;
 }
 
-.ellipsis-menu .menu button {
+.dropdown-menu button {
     background-color: transparent;
     border: none;
     padding: var(--space-1);
@@ -464,6 +464,282 @@ header .user {
     width: 100%;
 }
 
-.ellipsis-menu .menu button:hover {
+.dropdown-menu button:hover {
     background-color: var(--color-card-dark);
+}
+
+/* Detals sidepanel */
+.details-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: clamp(320px, 35dvw, 420px);
+    transform: translateX(100%);
+    z-index: 99;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-3) 0 var(--space-3);
+    background-color: var(--color-primary-800);
+
+    transition: transform .1s ease-in-out;
+    box-shadow: -6px 0 12px rgba(0, 0, 0, .25)
+}
+
+.details-panel.open {
+    transform: translateX(0);
+}
+
+.details-panel svg {
+    color: var(--color-text);
+}
+
+.details-panel .util-btns {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+
+    display: flex;
+    gap: var(--space-2);
+}
+
+.details-panel .util-btns button {
+    background: none;
+    border: none;
+    font-size: var(--font-size-p-m);
+    cursor: pointer;
+    transition: transform .1s ease-in-out;
+}
+
+.details-panel .util-btns button:hover {
+    transform: scale(1.02);
+}
+
+.details-panel h1 {
+    font-size: var(--font-size-h1);
+}
+
+.details-panel .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3)
+}
+
+.details-panel .content dl {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    color: var(--color-text);
+    border-bottom: .5px solid rgba(255, 255, 255, .5);
+    padding: 0 0 var(--space-3) 0;
+}
+
+.details-panel .content .row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    opacity: .75;
+    font-size: var(--font-size-p-m);
+}
+
+.details-panel .content .row dt {
+    display: flex;
+    gap: var(--space-1);
+    align-items: center;
+    font-weight: 500;
+}
+
+.details-panel .content .row dd {
+    text-align: left;
+    font-weight: 400;
+
+}
+
+.details-panel .content .row dd.colored p {
+    background-color: var(--dd-color);
+
+    display: inline-block;
+    text-shadow: 0 0 12px rgba(0, 0, 0);
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: var(--font-size-p-s)
+}
+
+.details-panel .content .description {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1)
+}
+
+.details-panel .content .description h2 {
+    font-size: var(--font-size-h2);
+    font-weight: 700;
+}
+
+.details-panel .content .description p {
+    font-size: var(--font-size-p-s);
+    line-height: var(--line-height-base);
+}
+
+/* Tooltips */
+.tooltip {
+    background-color: var(--color-accent);
+    padding: var(--space-1);
+    z-index: 999;
+    position: relative;
+    box-shadow: var(--box-shadow-base);
+}
+
+.tooltip::before {
+    content: '';
+    position: absolute;
+
+    height: 0;
+    width: 0;
+
+    top: 50%;
+    left: -10px;
+
+    transform: translateY(-50%);
+
+    border-bottom: var(--space-1) solid transparent;
+    border-top: var(--space-1) solid transparent;
+    border-right: var(--space-1) solid var(--color-accent)
+}
+
+/* Task addition modal */
+.add-task-modal {
+    background-color: rgba(0, 0, 0, .5);
+    opacity: 0;
+    pointer-events: none;
+
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity .2s ease-in-out;
+}
+
+.add-task-modal.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.add-task-modal .wrapper {
+    background-color: var(--color-bg);
+    position: relative;
+
+    padding: var(--space-3);
+
+    width: clamp(820px, 60dvw, 1100px);
+    display: flex;
+    gap: var(--space-4)
+}
+
+.add-task-modal .wrapper .form button {
+    background-color: var(--color-accent);
+    color: var(--color-text);
+    padding: var(--space-2);
+    text-shadow: 0 0 12px rgba(0, 0, 0, .1);
+    font-size: var(--font-size-p-m);
+    border: none;
+    cursor: pointer;
+    transition: transform .1s ease-in-out;
+}
+
+.add-task-modal .wrapper button:hover {
+    transform: scale(1.02);
+}
+
+.add-task-modal .wrapper>* {
+    flex: 1;
+}
+
+.add-task-modal .wrapper .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    border-right: .1px solid rgb(60, 131, 246, .5);
+    padding-right: var(--space-4)
+}
+
+.add-task-modal .wrapper form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+}
+
+.add-task-modal .wrapper form input,
+.add-task-modal .wrapper form select,
+.add-task-modal .wrapper form textarea {
+    background-color: var(--color-primary-800);
+    border: none;
+    color: var(--color-text);
+    line-height: var(--line-height-base);
+    flex: 1;
+    padding: var(--space-1);
+    font-size: var(--font-size-p-s);
+    outline: transparent;
+    transition: outline .1s ease-in-out;
+}
+
+.add-task-modal .wrapper form input:focus,
+.add-task-modal .wrapper form select:focus,
+.add-task-modal .wrapper form textarea:focus {
+    outline: 2px solid var(--color-accent);
+}
+
+.add-task-modal .wrapper form textarea {
+    overflow-x: hidden;
+    resize: none;
+}
+
+.add-task-modal .wrapper form input[type="date"] {
+    color: rgba(255, 255, 255);
+}
+
+.add-task-modal .wrapper form .row {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.add-task-modal .wrapper form .row-multiple-inputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.add-task-modal .wrapper .close {
+    position: absolute;
+    color: var(--color-accent);
+    top: var(--space-1);
+    right: var(--space-1);
+    background-color: transparent;
+    border: none;
+    font-size: var(--font-size-p-l);
+    font-weight: 700;
+    transition: transform .1s ease-in-out;
+    cursor: pointer;
+}
+
+.add-task-modal .wrapper .close:hover {
+    transform: scale(1.05);
+}
+
+.add-task-modal .wrapper .task-card {
+    position: relative;
+    padding: var(--space-3) var(--space-2) var(--space-2) var(--space-2);
+    letter-spacing: .1em;
+}
+
+.add-task-modal .wrapper .preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
 }

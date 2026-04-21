@@ -1,6 +1,6 @@
 import TaskCard from '../task/TaskCard.jsx'
 
-const Section = ({ type, tasks, title }) => {
+const Section = ({ type, tasks, title, changeTaskStatus, handleDetailsPanel }) => {
     return (
         <div className={`child-section ${type ?? ''}`}>
             <p className="title">{title}</p>
@@ -8,7 +8,13 @@ const Section = ({ type, tasks, title }) => {
             <div className="tasks-wrapper">
                 {
                     tasks.map(task => {
-                        return <TaskCard key={task.id} variant={type} task={task} />
+                        return <TaskCard
+                            key={task.id}
+                            variant={type}
+                            task={task}
+                            changeTaskStatus={changeTaskStatus}
+                            handleDetailsPanel={handleDetailsPanel}
+                        />
                     })
                 }
             </div>

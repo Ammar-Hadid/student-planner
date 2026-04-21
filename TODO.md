@@ -1,0 +1,2 @@
+- [ ] Match cards size in Due soon section
+- [ ] Allow 2 cards instead of one in sub sections

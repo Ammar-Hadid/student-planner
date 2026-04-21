@@ -2,51 +2,55 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faAnglesLeft,
     faSearch,
-    faList
+    faList,
+    faAngleDoubleRight
 } from "@fortawesome/free-solid-svg-icons"
 
 import SubjectButton from "../filter/SubjectButton.jsx";
 import StatusButton from "../filter/StatusButton.jsx";
 
-const Sidebar = ({ subjects, statuses }) => {
+const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilter }) => {
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${isOpen ? '' : 'closed'}`}>
 
             {/* Heading */}
             <div className="heading">
-                <p>Student planner</p>
-                <FontAwesomeIcon className="icon" icon={faAnglesLeft} />
+                {isOpen && <p>Student planner</p>}
+                <button onClick={handleSidebar}>
+                    <FontAwesomeIcon className="icon" icon={isOpen ? faAnglesLeft : faAngleDoubleRight} />
+                </button>
             </div>
 
 
             {/* Filters */}
             <div className="filters">
-                {/* Search bar */}
-                <div className="search-bar">
+                {isOpen && <div className="search-bar">
                     <FontAwesomeIcon icon={faSearch} />
                     <p>Browse tasks</p>
-                </div>
+                </div>}
 
                 {/* Dashboard */}
                 <div className="dashboard">
-                    <p className="filters-title">Dashboard</p>
+                    {isOpen && <p className="filters-title">Dashboard</p>}
                     <div className="filters-wrapper">
-                        <button>
+                        <button onClick={() => handleSubjectFilter(null)}>
                             <FontAwesomeIcon icon={faList} />
-                            <p>All tasks</p>
+                            {isOpen && <p>All tasks</p>}
                         </button>
                     </div>
                 </div>
 
                 {/* Subjects */}
                 <div className="subjects">
-                    <p className="filters-title">Subjects</p>
+                    {isOpen && <p className="filters-title">Subjects</p>}
                     <div className="filters-wrapper">
                         {
                             subjects.map(s =>
                                 <SubjectButton
                                     key={s.id}
+                                    isOpen={isOpen}
                                     subject={s}
+                                    handleSubjectFilter={handleSubjectFilter}
                                     onClick={() => { console.log('subject button clicked') }}
                                 />
                             )
@@ -56,12 +60,13 @@ const Sidebar = ({ subjects, statuses }) => {
 
                 {/* Statuses */}
                 <div className="statuses">
-                    <p className="filters-title">Status</p>
+                    {isOpen && <p className="filters-title">Status</p>}
                     <div className="filters-wrapper">
                         {
                             statuses.map(status =>
                                 <StatusButton
                                     key={status.id}
+                                    isOpen={isOpen}
                                     status={status}
                                     onClick={() => console.log('Status button clicked')}
                                 />
