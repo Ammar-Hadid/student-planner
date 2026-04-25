@@ -279,6 +279,7 @@ header .dropdown {
     box-shadow: var(--box-shadow-base);
     border: 2px solid var(--color-accent);
     border-radius: var(--radius-section);
+    z-index: 99;
 }
 
 header .dropdown .row {
@@ -861,8 +862,8 @@ header .dropdown button {
 /* Auth page */
 .auth-page {
     background: linear-gradient(to bottom,
-            #222F44,
-            #1F1F24);
+            var(--color-primary-800),
+            var(--color-bg));
     height: 100dvh;
     overflow: hidden;
     display: flex;
