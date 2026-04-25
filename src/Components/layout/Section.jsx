@@ -6,20 +6,22 @@ const Section = ({ type, tasks, title, changeTaskStatus, handleDetailsPanel }) =
             <p className="title">{title}</p>
 
             <div className="tasks-wrapper">
-                {
-                    tasks.map(task => {
-                        return <TaskCard
-                            key={task.id}
-                            variant={type}
-                            task={task}
-                            changeTaskStatus={changeTaskStatus}
-                            handleDetailsPanel={handleDetailsPanel}
-                        />
-                    })
-                }
+
+                {tasks.length === 0 && <p>No results found</p>}
+
+
+                {tasks.length > 0 && tasks.map(task => (
+                    <TaskCard
+                        key={task.id}
+                        variant={type}
+                        task={task}
+                        changeTaskStatus={changeTaskStatus}
+                        handleDetailsPanel={handleDetailsPanel}
+                    />
+                ))}
             </div>
-        </div >
-    )
+        </div>
+    );
 }
 
-export default Section
+export default Section;

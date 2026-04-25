@@ -7,9 +7,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 
 import SubjectButton from "../filter/SubjectButton.jsx";
-import StatusButton from "../filter/StatusButton.jsx";
 
-const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilter }) => {
+const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilter, searchQuery, onSearchQueryChange }) => {
     return (
         <div className={`sidebar ${isOpen ? '' : 'closed'}`}>
 
@@ -26,7 +25,12 @@ const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilte
             <div className="filters">
                 {isOpen && <div className="search-bar">
                     <FontAwesomeIcon icon={faSearch} />
-                    <p>Browse tasks</p>
+                    <input
+                        type="search"
+                        placeholder="Browse tasks..."
+                        value={searchQuery}
+                        onChange={e => onSearchQueryChange(e.target.value)}
+                    />
                 </div>}
 
                 {/* Dashboard */}
@@ -58,22 +62,6 @@ const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilte
                     </div>
                 </div>
 
-                {/* Statuses */}
-                <div className="statuses">
-                    {isOpen && <p className="filters-title">Status</p>}
-                    <div className="filters-wrapper">
-                        {
-                            statuses.map(status =>
-                                <StatusButton
-                                    key={status.id}
-                                    isOpen={isOpen}
-                                    status={status}
-                                    onClick={() => console.log('Status button clicked')}
-                                />
-                            )
-                        }
-                    </div>
-                </div>
             </div>
         </div>
     )

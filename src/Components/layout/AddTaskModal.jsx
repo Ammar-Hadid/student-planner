@@ -8,7 +8,7 @@ import { statuses } from '../../data/statuses';
 
 import TaskCard from '../task/TaskCard';
 
-const AddTaskModal = ({ isOpen, onClose }) => {
+const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
 
     const initialValues = {
         title: '',
@@ -32,6 +32,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
     const onChange = (e) => {
         const { name, value } = e.target;
 
+
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -39,16 +40,27 @@ const AddTaskModal = ({ isOpen, onClose }) => {
         }))
     }
 
+    const handleClose = () => {
+        setFormData(initialValues)
+        onClose();
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(formData);
+        handleClose();
+    }
+
     return (
         <div className={`add-task-modal ${isOpen ? 'open' : ''}`}>
             <div className="wrapper">
-                <button className="close" onClick={() => onClose({ setFormData, initialValues })}>
+                <button className="close" onClick={handleClose}>
                     <FontAwesomeIcon icon={faTimes} />
                 </button>
 
                 <div className="form">
                     <p className="title">Create task</p>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="row row-multiple-inputs">
                             {/* Title */}
                             <input
@@ -131,7 +143,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
                             />
                         </div>
 
-                        <button>Create task</button>
+                        <button type="submit">Create task</button>
                     </form>
                 </div>
 

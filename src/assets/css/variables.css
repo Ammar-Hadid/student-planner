@@ -18,10 +18,14 @@
     --color-card-light: rgba(255, 255, 255, .10);
     --color-card-dark: rgba(255, 255, 255, .05);
 
+    /* interaction colors */
+    --color-active: hsl(217, 91%, 63%);
+
 
     /* Typography */
     --font-family: 'Inter', sans-serif;
 
+    --font-size-h1-l: 2rem;
     --font-size-h1: 1.5rem;
     --font-size-h2: 1.35rem;
 
@@ -30,6 +34,7 @@
     --font-size-p-s: .95rem;
 
     --line-height-base: 1.6;
+    --line-height-l: 1.8;
 
     /* Spacing */
     --icon-size-l: 30px;
@@ -42,8 +47,11 @@
     --space-4: 3.5rem;
     --space-5: 6rem;
 
+    --sec-space-1: 10rem;
+
     --radius-section: 25px;
 
     /* Effects */
     --box-shadow-base: 2px 2px 6px rgba(0, 0, 0, .25);
+    --box-shadow-l: 4px 4px 14px rgba(0, 0, 0, .25);
 }

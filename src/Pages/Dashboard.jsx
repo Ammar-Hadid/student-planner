@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 import Sidebar from "../Components/layout/Sidebar.jsx";
 import Header from "../Components/layout/Header.jsx"
@@ -6,19 +7,21 @@ import Section from "../Components/layout/Section";
 import Panel from "../Components/layout/Panel.jsx";
 import DetailsPanel from "../Components/task/DetailsPanel.jsx";
 import AddTaskModal from "../Components/layout/AddTaskModal.jsx";
+import QuoteOfTheDay from "../Components/widgets/QuoteOfTheDay.jsx";
 
 // Data
 import { subjects } from "../data/subjects.js";
 import { statuses, STATUSES_IDS } from "../data/statuses.js";
+import quoteOfTheDayApi from "../services/quotes/quotesApi.js";
 
-import initialTasks from '../data/tasks.js'
+import { loadSidebarPreference, saveSidebarPreference } from "../services/uiPreferencesLocalStorage/sidebarPreference.js";
 
-const Dashboard = () => {
+const Dashboard = ({ tasks, setTasks }) => {
 
-    const [tasks, setTasks] = useState(initialTasks);
     const [activeSubjectId, setActiveSubjectId] = useState(null);
 
     const activeTasks = activeSubjectId ? tasks.filter(task => task.subject === activeSubjectId) : tasks
+
 
     // #region Get due soon tasks
     const now = new Date();
@@ -31,6 +34,9 @@ const Dashboard = () => {
         return differenceInDays <= 3 && differenceInDays > 0
     })
     // #endregion
+
+    // get todo tasks
+    const toDoTasks = activeTasks.filter(task => task.status === STATUSES_IDS.TO_DO);
 
     // Get in progress tasks
     const inProgressTasks = activeTasks.filter(task => task.status === STATUSES_IDS.IN_PROGRESS);
@@ -65,7 +71,11 @@ const Dashboard = () => {
     // #endregion
 
     // #region Sidebar
-    const [isSideBarOpen, setIsSidebarOpen] = useState(true);
+    const [isSideBarOpen, setIsSidebarOpen] = useState(loadSidebarPreference);
+
+    useEffect(() => {
+        saveSidebarPreference(isSideBarOpen)
+    }, [isSideBarOpen])
 
     const handelSidebar = () => {
         setIsSidebarOpen(prev => !prev);
@@ -82,24 +92,78 @@ const Dashboard = () => {
     }
     // #endregion
 
+    // #region Add task modal
     const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
 
     const openAddTaskModal = () => {
         setIsAddTaskModalOpen(true)
     }
 
-    const closeTaskModal = ({ setFormData, initialValues }) => {
-        setFormData(initialValues);
+    const closeTaskModal = () => {
         setIsAddTaskModalOpen(false);
     }
 
+    const handleCreateTask = (formData) => {
+        const newTask = {
+            id: uuidv4(),
+            title: formData.title.trim(),
+            subject: formData.subject,
+            status: formData.status,
+            dueDate: new Date(formData.dueDate),
+            teacher: formData.teacher.trim(),
+            shortDescription: formData.shortDescription,
+            longDescription: formData.longDescription
+        }
+
+        setTasks(prev => (
+            [
+                ...prev,
+                newTask
+            ]
+        ))
+    }
+    // #endregion
+
+    // #region Quote section
+    const [quote, setQuote] = useState('');
+    const [quoteLoading, setQuoteLoading] = useState(false);
+    const [quoteError, setQuoteError] = useState(null)
+
+    useEffect(() => {
+        const fetchQuote = async () => {
+            try {
+                setQuoteLoading(true);
+                setQuoteError(null);
+                const data = await quoteOfTheDayApi();
+                setQuote(data);
+            }
+
+            catch (error) {
+                setQuoteError('Failed to load quote');
+                console.error(`Something went wrong: ${error}`)
+            }
+
+            finally {
+                setQuoteLoading(false);
+            }
+        }
+
+        fetchQuote()
+    }, [])
+    // #endregion
+
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const isSearching = searchQuery.trim().length > 0;
+
+    const searchedTasks = tasks.filter(task => task.title.toLowerCase().includes(searchQuery.trim().toLowerCase()));
 
     return (
         <section className="dashboard">
 
             <DetailsPanel isOpen={!!detailsPanelTask} task={detailsPanelTask} onClose={closeDetailsPanel} />
 
-            <AddTaskModal isOpen={isAddTaskModalOpen} onClose={closeTaskModal} />
+            <AddTaskModal isOpen={isAddTaskModalOpen} onClose={closeTaskModal} onSubmit={handleCreateTask} />
 
             <Sidebar
                 subjects={subjects}
@@ -107,38 +171,69 @@ const Dashboard = () => {
                 isOpen={isSideBarOpen}
                 handleSidebar={handelSidebar}
                 handleSubjectFilter={handleSubjectFilter}
+                searchQuery={searchQuery}
+                onSearchQueryChange={setSearchQuery}
             />
 
             <div className="main-content">
-                <Header title="All tasks" userName="El Pridro" openAddTaskModal={openAddTaskModal} />
+                <Header openAddTaskModal={openAddTaskModal} />
 
                 <Panel>
-                    {/* Due soon section */}
-                    <Section
-                        type="featured"
-                        title="Due soon"
-                        tasks={dueSoonTasks}
-                        changeTaskStatus={changeTaskStatus}
-                        handleDetailsPanel={handleDetailsPanel}
-                    />
 
-                    {/* In progress section */}
-                    <Section
-                        type="compact"
-                        title="In Progress"
-                        tasks={inProgressTasks}
-                        changeTaskStatus={changeTaskStatus}
-                        handleDetailsPanel={handleDetailsPanel}
-                    />
+                    {!isSearching &&
+                        <>
+                            < Section
+                                type="featured"
+                                title="Due soon"
+                                tasks={dueSoonTasks}
+                                changeTaskStatus={changeTaskStatus}
+                                handleDetailsPanel={handleDetailsPanel}
+                            />
 
-                    {/* Completed section */}
-                    <Section
-                        type="compact"
-                        title="Completed"
-                        tasks={completedTasks}
-                        changeTaskStatus={changeTaskStatus}
-                        handleDetailsPanel={handleDetailsPanel}
-                    />
+                            <Section
+                                type="compact"
+                                title="To do"
+                                tasks={toDoTasks}
+                                changeTaskStatus={changeTaskStatus}
+                                handleDetailsPanel={handleDetailsPanel}
+                            />
+
+                            <Section
+                                type="compact"
+                                title="In progress"
+                                tasks={inProgressTasks}
+                                changeTaskStatus={changeTaskStatus}
+                                handleDetailsPanel={handleDetailsPanel}
+                            />
+
+                            <Section
+                                type="compact"
+                                title="Completed"
+                                tasks={completedTasks}
+                                changeTaskStatus={changeTaskStatus}
+                                handleDetailsPanel={handleDetailsPanel}
+                            />
+
+                            <QuoteOfTheDay
+                                title="Quote of the day"
+                                quote={quote}
+                                loading={quoteLoading}
+                                error={quoteError}
+                            />
+                        </>
+                    }
+
+                    {
+                        isSearching &&
+                        <Section
+                            type="featured"
+                            title={`Results for "${searchQuery}"`}
+                            tasks={searchedTasks}
+                            changeTaskStatus={changeTaskStatus}
+                            handleDetailsPanel={handleDetailsPanel}
+                        />
+                    }
+
                 </Panel>
             </div>
         </section >

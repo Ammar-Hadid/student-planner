@@ -14,7 +14,7 @@ const TaskCard = ({ task, variant, changeTaskStatus, handleDetailsPanel }) => {
             <p>{task.title || 'Task Title'}</p>
             <ul>
                 <li>{task.subject || 'Task subject'}</li>
-                <li>{!isNaN(task.dueDate.getTime()) ? task.dueDate.toLocaleString() : '' || 'Task Date'}</li>
+                <li>{task.dueDate instanceof Date ? task.dueDate.toLocaleDateString('en-GB', {day: "numeric", month: "short"}) : 'Task Date'}</li>
             </ul>
         </div>
     )

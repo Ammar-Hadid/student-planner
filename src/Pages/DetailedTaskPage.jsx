@@ -1,41 +1,39 @@
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-    faAnglesRight,
-    faUpRightAndDownLeftFromCenter,
     faList,
     faClock,
     faCircle,
-    faAddressCard
+    faAddressCard,
+    faArrowLeft
 } from "@fortawesome/free-solid-svg-icons"
 
-import { mapSubjects } from "../../data/subjects"
-import { mapStatuses } from "../../data/statuses"
-import DescriptionRow from "./DescriptionRow"
+import DescriptionRow from "../Components/task/DescriptionRow";
 
-const DetailsPanel = ({ isOpen, task, onClose }) => {
+import { mapStatuses } from '../data/statuses';
+import { mapSubjects } from '../data/subjects';
 
-    const subject = mapSubjects[task?.subject] || {};
-    const status = mapStatuses[task?.status] || {};
 
+const DetailedTaskPage = ({ tasks }) => {
+    const { id } = useParams();
+
+    const task = tasks.find(task => task.id === id);
+
+    if (!task) {
+        return
+    }
+
+    const subject = mapSubjects[task.subject] || {};
+    const status = mapStatuses[task.status] || {};
 
     return (
-        <div className={`details-panel ${isOpen ? 'open' : ''}`}>
+        <div className="task-details-page">
+            <Link to="/" className="navigate-back" >
+                <FontAwesomeIcon icon={faArrowLeft} />
+            </Link>
 
-            <div className="util-btns">
-                {/* Close button */}
-                <button onClick={onClose}>
-                    <FontAwesomeIcon icon={faAnglesRight} />
-                </button>
-
-                {/* View full page button */}
-                {task && <Link to={`/tasks/${task.id}`}>
-                    <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} />
-                </Link>}
-            </div>
-
-            {task && <div className="content">
+            <div className="content">
                 <h1>{task.title}</h1>
 
                 <dl>
@@ -68,11 +66,25 @@ const DetailsPanel = ({ isOpen, task, onClose }) => {
 
                 <div className="description">
                     <h2>Description</h2>
-                    <p>{task.shortDescription}</p>
+                    <p>{task.longDescription}</p>
                 </div>
-            </div>}
+            </div>
         </div>
     )
 }
 
-export default DetailsPanel;
+export default DetailedTaskPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
