@@ -26,7 +26,7 @@ const EllipsisMenu = ({ task, changeTaskStatus }) => {
                 setSubmenu(null);
             }
         },
-        placement: "bottom-end",
+        placement: "bottom-start",
         strategy: "fixed",
         middleware: [
             offset(10),
