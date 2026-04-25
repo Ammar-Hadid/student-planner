@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
 import { createPortal } from "react-dom";
-import { useFloating, flip, offset, shift, autoUpdate, useClick, useDismiss, useInteractions } from "@floating-ui/react";
+import { useFloating, flip, offset, shift, useClick, useDismiss, useInteractions } from "@floating-ui/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {

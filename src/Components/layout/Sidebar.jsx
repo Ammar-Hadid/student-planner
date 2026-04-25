@@ -55,7 +55,6 @@ const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilte
                                     isOpen={isOpen}
                                     subject={s}
                                     handleSubjectFilter={handleSubjectFilter}
-                                    onClick={() => { console.log('subject button clicked') }}
                                 />
                             )
                         }

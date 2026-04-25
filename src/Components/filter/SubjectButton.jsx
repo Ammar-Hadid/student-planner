@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { offset, useFloating, useHover, useInteractions } from "@floating-ui/react"
 
-const SubjectButton = ({ isOpen, subject, onClick, handleSubjectFilter }) => {
+const SubjectButton = ({ isOpen, subject, handleSubjectFilter }) => {
 
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 

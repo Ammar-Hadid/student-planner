@@ -21,7 +21,7 @@ const DetailedTaskPage = ({ tasks }) => {
     const task = tasks.find(task => task.id === id);
 
     if (!task) {
-        return
+        return <p>Task not found</p>
     }
 
     const subject = mapSubjects[task.subject] || {};
