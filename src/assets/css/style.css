@@ -1019,6 +1019,7 @@ header .dropdown button {
         max-height: none;
         overflow: visible;
         padding-right: 0;
+        margin-bottom: var(--space-5);
     }
 
     .panel .compact,
@@ -1168,5 +1169,10 @@ header .dropdown button {
 
     .panel .featured .tasks-wrapper {
         padding: var(--space-2) var(--space-2);
+    }
+
+
+    .panel .quote-sec .quote-wrapper {
+        padding: var(--space-1);
     }
 }
