@@ -1145,4 +1145,16 @@ header .dropdown button {
 
         font-size: var(--font-size-p-m);
     }
+
+    header {
+        gap: var(--space-1)
+    }
+
+    header .header-main {
+        gap: var(--space-1)
+    }
+
+    .task-details-page {
+        padding: var(--space-2);
+    }
 }

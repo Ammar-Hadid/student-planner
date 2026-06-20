@@ -2,18 +2,18 @@ export const loadSidebarPreference = () => {
     try {
         const sidebarState = localStorage.getItem('sidebarState');
 
-        if (!sidebarState) return true;
+        if (!sidebarState) return false;
 
         const parsedSidebarState = JSON.parse(sidebarState);
 
-        if (typeof parsedSidebarState !== 'boolean') return true;
+        if (typeof parsedSidebarState !== 'boolean') return false;
 
         return parsedSidebarState;
     }
 
     catch (error) {
         console.error(`Something went wrong with loading sidebar preference: ${error}`);
-        return true
+        return false
     }
 }
 
