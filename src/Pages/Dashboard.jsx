@@ -165,6 +165,15 @@ const Dashboard = ({ tasks, setTasks }) => {
 
             <AddTaskModal isOpen={isAddTaskModalOpen} onClose={closeTaskModal} onSubmit={handleCreateTask} />
 
+            <button
+                type="button"
+                className="mobile-sidebar-button"
+                onClick={setIsSidebarOpen}
+                aria-label="Open filters"
+            >
+                ☰
+            </button>
+
             <Sidebar
                 subjects={subjects}
                 statuses={statuses}

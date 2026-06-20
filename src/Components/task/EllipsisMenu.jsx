@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom";
 import { useFloating, flip, offset, shift, useClick, useDismiss, useInteractions } from "@floating-ui/react";
 
@@ -44,6 +44,11 @@ const EllipsisMenu = ({ task, changeTaskStatus }) => {
     ])
     // #endregion
 
+    const mainReferenceRef = useRef(null)
+    const mainFloatingRef = useRef(null)
+    const subReferenceRef = useRef(null)
+    const subFloatingRef = useRef(null)
+
     const isSubMenuOpen = subMenu === 'status';
     const { refs: subRefs, floatingStyles: subFloatingStyles } = useFloating({
         open: isSubMenuOpen,
@@ -59,10 +64,26 @@ const EllipsisMenu = ({ task, changeTaskStatus }) => {
         ]
     });
 
+    useEffect(() => {
+        mainRefs.setReference(mainReferenceRef.current)
+    }, [mainRefs])
+
+    useEffect(() => {
+        mainRefs.setFloating(menuState ? mainFloatingRef.current : null)
+    }, [mainRefs, menuState])
+
+    useEffect(() => {
+        subRefs.setReference(subReferenceRef.current)
+    }, [subRefs])
+
+    useEffect(() => {
+        subRefs.setFloating(isSubMenuOpen ? subFloatingRef.current : null)
+    }, [isSubMenuOpen, subRefs])
+
     return (
         <div className="ellipsis-menu">
             <button
-                ref={mainRefs.setReference}
+                ref={mainReferenceRef}
                 className="trigger"
                 {...getReferenceProps({
                     onClick: e => e.stopPropagation()
@@ -71,16 +92,16 @@ const EllipsisMenu = ({ task, changeTaskStatus }) => {
                 <FontAwesomeIcon icon={faEllipsisVertical} />
             </button>
 
-            {menuState && createPortal(<ul ref={mainRefs.setFloating} style={mainFloatingStyles} {...getFloatingProps()} className="dropdown-menu">
+            {menuState && createPortal(<ul ref={mainFloatingRef} style={mainFloatingStyles} {...getFloatingProps()} className="dropdown-menu">
                 <li className="has-submenu">
-                    <button ref={subRefs.setReference} onClick={e => { e.stopPropagation(); setSubmenu('status') }}>
+                    <button ref={subReferenceRef} onClick={e => { e.stopPropagation(); setSubmenu('status') }}>
                         <FontAwesomeIcon icon={faCircle} />
                         Status
                         <FontAwesomeIcon icon={faChevronRight} />
                     </button>
 
 
-                    {subMenu === 'status' && <ul ref={subRefs.setFloating} style={subFloatingStyles} className="dropdown-submenu">
+                    {subMenu === 'status' && <ul ref={subFloatingRef} style={subFloatingStyles} className="dropdown-submenu">
                         {statuses
                             .filter(status => status.id !== task.status)
                             .map(status => {

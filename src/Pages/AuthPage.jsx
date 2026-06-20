@@ -5,7 +5,6 @@ import { useAuth } from '../context/authContext';
 const AuthPage = () => {
     const initialValues = {
         userName: '',
-        password: ''
     };
 
     const [form, setForm] = useState(initialValues);
@@ -40,8 +39,8 @@ const AuthPage = () => {
 
             <div className="auth-form">
                 <div className="form-heading">
-                    <h2>Login</h2>
-                    <p>Enter your details to get started</p>
+                    <h2>Welcome</h2>
+                    <p>Enter your name to personalize your planner</p>
                 </div>
                 <form onSubmit={handleAuthSubmit}>
                     <input
@@ -53,16 +52,7 @@ const AuthPage = () => {
                         onChange={handleOnChange}
                     />
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        required
-                        value={form.password}
-                        onChange={handleOnChange}
-                    />
-
-                    <button type="submit">Login</button>
+                    <button type="submit">Continue</button>
                 </form>
             </div>
         </div>

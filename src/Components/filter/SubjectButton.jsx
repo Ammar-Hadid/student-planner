@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { offset, useFloating, useHover, useInteractions } from "@floating-ui/react"
 
 const SubjectButton = ({ isOpen, subject, handleSubjectFilter }) => {
@@ -17,6 +17,16 @@ const SubjectButton = ({ isOpen, subject, handleSubjectFilter }) => {
 
     const onHover = useHover(context)
     const { getReferenceProps, getFloatingProps } = useInteractions([onHover])
+    const referenceRef = useRef(null)
+    const floatingRef = useRef(null)
+
+    useEffect(() => {
+        refs.setReference(referenceRef.current)
+    }, [refs])
+
+    useEffect(() => {
+        refs.setFloating(isTooltipOpen ? floatingRef.current : null)
+    }, [isTooltipOpen, refs])
 
     return (
         <button
@@ -24,10 +34,10 @@ const SubjectButton = ({ isOpen, subject, handleSubjectFilter }) => {
                 onClick: () => handleSubjectFilter(subject)
             })}
             className="subject-btn"
-            ref={refs.setReference}
+            ref={referenceRef}
         >
             <div className="subject-button-color" style={{ backgroundColor: subject.color }} />
-            {!isOpen && isTooltipOpen && <p className="tooltip" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps}>{subject.label}</p>}
+            {!isOpen && isTooltipOpen && <p className="tooltip" ref={floatingRef} style={floatingStyles} {...getFloatingProps()}>{subject.label}</p>}
             {isOpen && <p>{subject.label}</p>}
         </button>
     )

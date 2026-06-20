@@ -8,7 +8,7 @@ import {
 
 import SubjectButton from "../filter/SubjectButton.jsx";
 
-const Sidebar = ({ subjects, statuses, isOpen, handleSidebar, handleSubjectFilter, searchQuery, onSearchQueryChange }) => {
+const Sidebar = ({ subjects, isOpen, handleSidebar, handleSubjectFilter, searchQuery, onSearchQueryChange }) => {
     return (
         <div className={`sidebar ${isOpen ? '' : 'closed'}`}>
 
