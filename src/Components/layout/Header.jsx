@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faPlus,
@@ -35,6 +35,16 @@ const Header = ({ openAddTaskModal }) => {
     const onDismiss = useDismiss(context);
 
     const { getReferenceProps, getFloatingProps } = useInteractions([onClick, onDismiss]);
+    const referenceRef = useRef(null);
+    const floatingRef = useRef(null);
+
+    useEffect(() => {
+        refs.setReference(referenceRef.current);
+    }, [refs]);
+
+    useEffect(() => {
+        refs.setFloating(isDropdownOpen ? floatingRef.current : null);
+    }, [isDropdownOpen, refs]);
 
     return (
         <header>
@@ -45,13 +55,13 @@ const Header = ({ openAddTaskModal }) => {
                 </button>
             </div>
 
-            <div className="user" ref={refs.setReference} {...getReferenceProps()}>
+            <div className="user" ref={referenceRef} {...getReferenceProps()}>
                 <FontAwesomeIcon icon={faUser} />
                 <p>{user}</p>
                 <FontAwesomeIcon className={`chevron ${isDropdownOpen ? 'open' : ''}`} icon={faChevronRight} />
 
                 {isDropdownOpen && (
-                    <ul className="dropdown" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+                    <ul className="dropdown" ref={floatingRef} style={floatingStyles} {...getFloatingProps()}>
                         <li>
                             <div className="row dropdown-user">
                                 <FontAwesomeIcon icon={faUser} />
